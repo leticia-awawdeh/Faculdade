@@ -2,30 +2,26 @@
 #include <limits.h>
 
 #define INF 1000000000
-#define MAXN 260      // Número máximo de cidades (N ≤ 250, com folga)
-#define MAX_ADJ 260   // Grau máximo de cada cidade
-#define MAX_CASES 1000  // Número máximo de casos
+#define MAXN 260      
+#define MAX_ADJ 260   
+#define MAX_CASES 1000  
 
 typedef struct {
     int v, cost;
 } Edge;
 
-// Variáveis globais para o grafo
-Edge adj[MAXN][MAX_ADJ];  // Lista de adjacência para cada cidade
-int deg[MAXN];            // Quantidade de arestas de cada cidade
 
-/*
- * Inicializa o grafo para N cidades, definindo o grau de cada cidade como 0.
- */
+Edge adj[MAXN][MAX_ADJ];  
+int deg[MAXN];            
+
+
 void initializeGraph(int N) {
     for (int i = 0; i < N; i++){
         deg[i] = 0;
     }
 }
 
-/*
- * Lê M arestas e atualiza o grafo (inserindo as arestas de forma bidirecional).
- */
+
 void readEdges(int M) {
     int u, v, p;
     for (int i = 0; i < M; i++){
@@ -41,11 +37,7 @@ void readEdges(int M) {
     }
 }
 
-/*
- * Impõe a restrição da rota de serviço:
- * As cidades da rota são 0, 1, ..., C-1. Para cada cidade i (0 ≤ i < C-1),
- * descartamos todas as arestas de saída, exceto a que liga i a i+1.
- */
+
 void applyRouteConstraint(int C) {
     for (int i = 0; i < C - 1; i++){
         int routeCost = -1;
@@ -65,10 +57,7 @@ void applyRouteConstraint(int C) {
     }
 }
 
-/*
- * Executa o algoritmo de Dijkstra no grafo com N cidades, partindo da cidade K
- * e retorna o menor custo para atingir o destino (target).
- */
+
 int dijkstra(int N, int K, int target) {
     int dist[MAXN], used[MAXN];
     // Inicializa as distâncias e vetor de visitados
@@ -106,10 +95,6 @@ int main(){
     int N, M, C, K;
     int resultados[MAX_CASES], contRes = 0;
     
-    /*
-     * Cada caso de teste inicia com: N M C K
-     * A entrada termina com "0 0 0 0".
-     */
     while (scanf("%d %d %d %d", &N, &M, &C, &K) == 4) {
         if (N == 0 && M == 0 && C == 0 && K == 0)
             break;
@@ -120,14 +105,8 @@ int main(){
         // Lê M arestas e atualiza o grafo.
         readEdges(M);
         
-        /*
-         * Aplica a restrição da rota de serviço:
-         * A rota é formada pelas cidades 0, 1, ..., C-1, e se o veículo entrar em
-         * alguma dessas (exceto o destino C-1) deverá seguir estritamente a rota.
-         */
         applyRouteConstraint(C);
         
-        // Calcula o menor custo para ir da cidade K até o destino (C-1)
         int custo = dijkstra(N, K, C - 1);
         resultados[contRes++] = custo;
     }
